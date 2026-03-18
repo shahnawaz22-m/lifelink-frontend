@@ -269,6 +269,7 @@
                                             <th><i class="bi bi-droplet-fill"></i> Blood Group</th>
                                             <th><i class="bi bi-geo-alt"></i> City</th>
                                             <th><i class="bi bi-telephone"></i> Phone</th>
+                                            <th>Status</th>
                                             <th><i class="bi bi-whatsapp"></i> Contact</th>
 
                                         </tr>
@@ -351,18 +352,23 @@
                     const whatsappLink = "https://wa.me/" + donor.phone + "?text=" + message;
 
                     table.innerHTML += `
-                        <tr>
-                            <td>${donor.name}</td>
-                            <td><span class="badge bg-danger">${donor.bloodGroup}</span></td>
-                            <td>${donor.city}</td>
-                            <td><a href="tel:${donor.phone}">${donor.phone}</a></td>
-                            <td>
-                                <a href="${whatsappLink}" target="_blank" class="btn btn-success btn-sm">
-                                    WhatsApp
-                                </a>
-                            </td>
-                        </tr>
-                    `;
+    <tr>
+        <td>${donor.name}</td>
+        <td><span class="badge bg-danger">${donor.bloodGroup}</span></td>
+        <td>${donor.city}</td>
+        <td><a href="tel:${donor.phone}">${donor.phone}</a></td>
+        <td>
+            <span class="badge ${donor.status === 'Eligible' ? 'bg-success' : 'bg-warning'}">
+                ${donor.status}
+            </span>
+        </td>
+        <td>
+            <a href="${whatsappLink}" target="_blank" class="btn btn-success btn-sm">
+                WhatsApp
+            </a>
+        </td>
+    </tr>
+`;
                 });
 
                 showAlert("Donors loaded successfully");
