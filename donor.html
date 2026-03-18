@@ -278,11 +278,11 @@
                         "Content-Type": "application/json"
                     },
                     body: JSON.stringify({
-                        name,
-                        bloodGroup,
-                        city,
-                        phone,
-                        lastDonation
+                        name: document.getElementById("name").value,
+                        bloodGroup: document.getElementById("bloodGroup").value,
+                        city: document.getElementById("city").value,
+                        phoneNumber: document.getElementById("phone").value,
+                        lastDonationDate: document.getElementById("lastDonationDate").value
                     })
                 });
 
