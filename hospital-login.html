@@ -73,8 +73,7 @@
             if (res.ok) {
                 alert("Login successful");
 
-                // save login info
-                localStorage.setItem("hospitalLoggedIn", "true");
+                localStorage.setItem("token", data.token);
 
                 window.location.href = "hospital.html";
             } else {
