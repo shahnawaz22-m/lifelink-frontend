@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>LifeLink Admin Dashboard</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
+</head>
+
+<body class="bg-light">
+
+    <nav class="navbar navbar-dark bg-dark">
+        <div class="container-fluid">
+            <span class="navbar-brand">LifeLink Admin Panel</span>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+
+        <!-- Hospital Approvals -->
+        <h3>Pending Hospital Approvals</h3>
+
+        <table class="table table-bordered table-striped mt-3">
+
+            <thead class="table-dark">
+                <tr>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>City</th>
+                    <th>Phone</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+
+            <tbody id="hospitalTable"></tbody>
+
+        </table>
+
+        <!-- Emergency Requests -->
+        <h3 class="mt-5">Emergency Requests</h3>
+
+        <div id="requestList" class="mt-3"></div>
+
+    </div>
+
+    <script>
+        const API = "http://localhost:5000/api";
+
+        // ✅ Load Hospitals
+        async function loadHospitals() {
+
+            const res = await fetch(`${API}/admin/hospitals`)
+            const hospitals = await res.json();
+
+            const table = document.getElementById("hospitalTable");
+            table.innerHTML = "";
+
+            hospitals.forEach(hospital => {
+
+                const row = document.createElement("tr");
+
+                row.innerHTML = `
+                    <td>${hospital.name}</td>
+                    <td>${hospital.email}</td>
+                    <td>${hospital.city}</td>
+                    <td>${hospital.phone}</td>
+                    <td>${hospital.status}</td>
+                    <td>
+<button class="btn btn-success btn-sm"
+onclick="approveHospital('${hospital._id}')">
+Approve
+</button>
+
+<button class="btn btn-danger btn-sm"
+onclick="deleteHospital('${hospital._id}')">
+🗑 Delete
+</button>
+</td>
+                `;
+
+                table.appendChild(row);
+            });
+        }
+
+        // ✅ Approve Hospital
+        async function approveHospital(id) {
+
+            await fetch(`${API}/admin/hospital/approve/${id}`, {
+                method: "PUT"
+            });
+
+            alert("Hospital Approved");
+            loadHospitals();
+        }
+        async function deleteHospital(id) {
+
+            if (!confirm("Are you sure you want to delete this hospital?")) return;
+
+            try {
+                const res = await fetch(`http://localhost:5000/api/admin/hospital/delete/${id}`, {
+                    method: "DELETE"
+                });
+
+                const data = await res.json();
+
+                alert(data.message);
+
+                loadHospitals();
+
+            } catch (error) {
+                console.error(error);
+            }
+        }
+
+        // ✅ Load Emergency Requests
+        async function loadRequests() {
+
+            const res = await fetch(`${API}/request/all`);
+            const data = await res.json();
+
+            const container = document.getElementById("requestList");
+            container.innerHTML = "";
+
+            data.requests.forEach(r => {
+
+                container.innerHTML += `
+                <div class="card p-3 mb-2">
+
+                    <b>${r.hospitalName}</b>
+
+                    <br>
+
+                    Blood Group: ${r.bloodGroup}
+
+                    <br>
+
+                    City: ${r.city}
+
+                    <br>
+
+                    Urgency: ${r.urgency}
+
+                    <br>
+
+                    📞 ${r.phone || "Not Provided"}
+
+                    <br><br>
+
+                    <button onclick="deleteRequest('${r._id}')" class="btn btn-danger btn-sm">
+                        🗑 Delete
+                    </button>
+
+                </div>
+                `;
+            });
+        }
+
+        // ✅ Delete Request
+        async function deleteRequest(id) {
+
+            if (!confirm("Are you sure you want to delete this request?")) return;
+
+            try {
+                const res = await fetch(`${API}/request/delete/${id}`, {
+                    method: "DELETE"
+                });
+
+                const data = await res.json();
+
+                alert(data.message);
+
+                loadRequests(); // refresh list
+
+            } catch (error) {
+                console.error(error);
+            }
+        }
+
+        // ✅ Initial Load
+        loadHospitals();
+        loadRequests();
+    </script>
+
+</body>
+
+</html>
