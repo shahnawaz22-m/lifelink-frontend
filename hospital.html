@@ -326,7 +326,7 @@
             const city = document.getElementById("city").value.trim();
             const table = document.getElementById("donorTable");
 
-            table.innerHTML = `<tr><td colspan="5" class="text-center">Searching...</td></tr>`;
+            table.innerHTML = `<tr><td colspan="6" class="text-center">Searching...</td></tr>`;
 
             try {
                 const res = await fetch(`${API}/donor/search?bloodGroup=${encodeURIComponent(blood)}&city=${encodeURIComponent(city)}`);
@@ -336,52 +336,70 @@
                 table.innerHTML = "";
 
                 if (donors.length === 0) {
-                    table.innerHTML = `<tr><td colspan="5" class="text-center">No donors found</td></tr>`;
+                    table.innerHTML = `<tr><td colspan="6" class="text-center">No donors found</td></tr>`;
                     return;
                 }
 
                 donors.forEach(donor => {
 
-                    const message = encodeURIComponent(
-                        "Hello " + donor.name +
-                        ", we urgently need " + donor.bloodGroup +
-                        " blood in " + donor.city +
-                        ". Please help if available."
-                    );
+                    const whatsappLink = "https://wa.me/" + donor.phone;
 
-                    const whatsappLink = "https://wa.me/" + donor.phone + "?text=" + message;
+                    const status = donor.status || "Eligible";
+
+                    const statusBadge = `
+                <span class="badge ${
+                    status === "Eligible" ? "bg-success" :
+                    status === "Recently Donated" ? "bg-warning" :
+                    "bg-danger"
+                }">
+                    ${status}
+                </span>
+            `;
 
                     table.innerHTML += `
-    <tr>
-        <td>${donor.name}</td>
-        <td><span class="badge bg-danger">${donor.bloodGroup}</span></td>
-        <td>${donor.city}</td>
-        <td><a href="tel:${donor.phone}">${donor.phone}</a></td>
-        
-        <td>
-            <span class="badge ${
-                donor.status === "Eligible" ? "bg-success" :
-                donor.status === "Recently Donated" ? "bg-warning" :
-                "bg-danger"
-            }">
-                ${donor.status}
-            </span>
-        </td>
+                <tr>
+                    <td>${donor.name}</td>
+                    <td><span class="badge bg-danger">${donor.bloodGroup}</span></td>
+                    <td>${donor.city}</td>
+                    <td>${donor.phone}</td>
+                    <td>${statusBadge}</td>
+                    <td>
+                        <a href="${whatsappLink}" target="_blank" class="btn btn-success btn-sm">
+                            WhatsApp
+                        </a>
 
-        <td>
-            <a href="${whatsappLink}" target="_blank" class="btn btn-success btn-sm">
-                WhatsApp
-            </a>
-        </td>
-    </tr>
-`;
+                        <button onclick="deleteDonor('${donor._id}')" 
+                            class="btn btn-danger btn-sm ms-2">
+                            Delete
+                        </button>
+                    </td>
+                </tr>
+            `;
                 });
-
-                showAlert("Donors loaded successfully");
 
             } catch (error) {
                 console.error(error);
-                table.innerHTML = `<tr><td colspan="5" class="text-danger text-center">Error loading donors</td></tr>`;
+                table.innerHTML = `<tr><td colspan="6" class="text-danger text-center">Error loading donors</td></tr>`;
+            }
+        }
+
+        async function deleteDonor(id) {
+            if (!confirm("Are you sure you want to delete this donor?")) return;
+
+            try {
+                const res = await fetch(`${API}/donor/delete/${id}`, {
+                    method: "DELETE"
+                });
+
+                const data = await res.json();
+
+                alert(data.message);
+
+                searchDonor();
+
+            } catch (error) {
+                console.error(error);
+                alert("Failed to delete donor");
             }
         }
 
