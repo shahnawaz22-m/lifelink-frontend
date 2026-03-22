@@ -367,11 +367,6 @@
                         <a href="${whatsappLink}" target="_blank" class="btn btn-success btn-sm">
                             WhatsApp
                         </a>
-
-                        <button onclick="deleteDonor('${donor._id}')" 
-                            class="btn btn-danger btn-sm ms-2">
-                            Delete
-                        </button>
                     </td>
                 </tr>
             `;
@@ -423,26 +418,6 @@
         document.addEventListener("DOMContentLoaded", () => {
             loadDonorCount();
         });
-        async function deleteDonor(id) {
-
-            if (!confirm("Delete this donor?")) return;
-
-            try {
-                const res = await fetch(`${API}/donor/delete/${id}`, {
-                    method: "DELETE"
-                });
-
-                if (res.ok) {
-                    alert("Deleted successfully");
-                    searchDonor();
-                } else {
-                    alert("Delete failed");
-                }
-
-            } catch (error) {
-                console.error(error);
-            }
-        }
     </script>
 
 </body>
