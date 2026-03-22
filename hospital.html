@@ -357,11 +357,17 @@
         <td><span class="badge bg-danger">${donor.bloodGroup}</span></td>
         <td>${donor.city}</td>
         <td><a href="tel:${donor.phone}">${donor.phone}</a></td>
+        
         <td>
-            <span class="badge ${donor.status === 'Eligible' ? 'bg-success' : 'bg-warning'}">
+            <span class="badge ${
+                donor.status === "Eligible" ? "bg-success" :
+                donor.status === "Recently Donated" ? "bg-warning" :
+                "bg-danger"
+            }">
                 ${donor.status}
             </span>
         </td>
+
         <td>
             <a href="${whatsappLink}" target="_blank" class="btn btn-success btn-sm">
                 WhatsApp
