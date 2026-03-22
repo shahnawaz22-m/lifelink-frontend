@@ -383,25 +383,6 @@
             }
         }
 
-        async function deleteDonor(id) {
-            if (!confirm("Are you sure you want to delete this donor?")) return;
-
-            try {
-                const res = await fetch(`${API}/donor/delete/${id}`, {
-                    method: "DELETE"
-                });
-
-                const data = await res.json();
-
-                alert(data.message);
-
-                searchDonor();
-
-            } catch (error) {
-                console.error(error);
-                alert("Failed to delete donor");
-            }
-        }
 
         async function createRequest() {
             const bloodGroup = document.getElementById("reqBloodGroup").value;
@@ -442,6 +423,26 @@
         document.addEventListener("DOMContentLoaded", () => {
             loadDonorCount();
         });
+        async function deleteDonor(id) {
+
+            if (!confirm("Delete this donor?")) return;
+
+            try {
+                const res = await fetch(`${API}/donor/delete/${id}`, {
+                    method: "DELETE"
+                });
+
+                if (res.ok) {
+                    alert("Deleted successfully");
+                    searchDonor();
+                } else {
+                    alert("Delete failed");
+                }
+
+            } catch (error) {
+                console.error(error);
+            }
+        }
     </script>
 
 </body>
