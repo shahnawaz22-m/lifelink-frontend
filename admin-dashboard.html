@@ -122,8 +122,10 @@
 
         // ================= DONORS =================
         async function loadDonors() {
-            const res = await fetch(`${API}/donor/search`);
+            const res = await fetch(`${API}/donor/search?bloodGroup=&city=`);
             const data = await res.json();
+
+            console.log("DONORS DATA:", data);
 
             const table = document.getElementById("donorList");
             table.innerHTML = "";
