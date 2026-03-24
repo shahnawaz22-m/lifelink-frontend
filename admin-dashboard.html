@@ -57,6 +57,7 @@
     </div>
 
     <script>
+        const token = localStorage.getItem("token");
         const API = "https://lifelink-backend-j9wo.onrender.com/api";
 
         // ================= HOSPITALS =================
@@ -95,7 +96,10 @@
 
         async function approveHospital(id) {
             await fetch(`${API}/admin/hospital/approve/${id}`, {
-                method: "PUT"
+                method: "PUT",
+                headers: {
+                    "Authorization": "Bearer " + token
+                }
             });
 
             alert("Hospital Approved");
@@ -107,7 +111,10 @@
 
             try {
                 const res = await fetch(`${API}/admin/hospital/delete/${id}`, {
-                    method: "DELETE"
+                    method: "DELETE",
+                    headers: {
+                        "Authorization": "Bearer " + token
+                    }
                 });
 
                 const data = await res.json();
@@ -152,7 +159,10 @@
             if (!confirm("Delete this donor?")) return;
 
             const res = await fetch(`${API}/donor/delete/${id}`, {
-                method: "DELETE"
+                method: "DELETE",
+                headers: {
+                    "Authorization": "Bearer " + token
+                }
             });
 
             if (res.ok) {
@@ -198,7 +208,10 @@
 
             try {
                 const res = await fetch(`${API}/request/delete/${id}`, {
-                    method: "DELETE"
+                    method: "DELETE",
+                    headers: {
+                        "Authorization": "Bearer " + token
+                    }
                 });
 
                 const data = await res.json();
