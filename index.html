@@ -335,6 +335,12 @@ City: ${r.city}
 Urgency: <b>${r.urgency}</b>
 
 <br>
+Priority: <b>
+  ${
+    r.priority === "HIGH" ? "🔴 HIGH" :
+    r.priority === "MEDIUM" ? "🟡 MEDIUM" : "🟢 LOW"
+  }
+</b>
 
 📞 ${r.phone || "Not Provided"}
 

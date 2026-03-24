@@ -54,7 +54,11 @@
             const data = await res.json();
 
             if (res.ok) {
+                // ✅ SAVE TOKEN
+                localStorage.setItem("adminToken", data.token);
+
                 alert("Login successful");
+
                 window.location.href = "admin-dashboard.html";
             } else {
                 alert(data.message);
